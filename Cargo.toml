@@ -1,5 +1,5 @@
 [package]
-name = "lightener"
+name = "r2-rs"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,11 +8,8 @@ edition = "2021"
 [dependencies]
 aws-config = "0.54"
 aws-sdk-s3 = "0.24"
-dotenvy = "0.15"
 rand = "0.8"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+
+[dev-dependencies]
+dotenvy = "0.15"
 tokio = { version = "1", features = ["full"] }
-tracing = "0.1"
-tracing-subscriber = "0.3"
-warp = "0.3"
