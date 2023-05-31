@@ -1,6 +1,6 @@
 use std::{env, error::Error};
 
-use aws_sdk_s3::{Client, Region};
+use aws_sdk_s3::{model::Object, Client, Region};
 
 use super::common::select_by_random;
 
@@ -64,5 +64,35 @@ impl R2Client {
         }
 
         Ok(Some(select_by_random(&self.cached_keys)))
+    }
+
+    // ! Perhaps shorten this to wrap around `get_objects`
+    /// Filter through objects
+    /// 
+    /// Similar to `get_objects`
+    pub async fn filter_objects<F>(&self, filter: F) -> Result<Vec<String>, Box<dyn Error>>
+    where
+        F: FnMut(&&Object) -> bool,
+    {
+        let req = self
+            .client
+            .list_objects()
+            .bucket(self.bucket.clone())
+            .send()
+            .await?;
+        if let Some(content) = req.contents() {
+            let names = content
+                .iter()
+                .filter(filter)
+                .map(|f| {
+                    // We expect each file to contain a name
+                    f.key().unwrap().to_string()
+                })
+                .collect::<Vec<_>>();
+
+            return Ok(names);
+        }
+
+        Err("NO_CONTENTS".into())
     }
 }
