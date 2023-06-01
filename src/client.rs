@@ -5,8 +5,8 @@ use aws_sdk_s3::{model::Object, Client, Region};
 use super::common::select_by_random;
 
 pub struct R2Client {
-    bucket: String,
-    cached_keys: Vec<String>,
+    pub bucket: String,
+    pub cached_keys: Vec<String>,
     client: Client,
 }
 
